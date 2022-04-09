@@ -1,0 +1,118 @@
+<p-toast></p-toast>
+
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button pButton pRipple label="Nuevo egreso" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+
+    </ng-template>
+
+    <ng-template pTemplate="right">
+
+    </ng-template>
+  </p-toolbar>
+
+  <p-table #dt [value]="egresosModels" [rows]="10" [paginator]="true" [globalFilterFields]="['producto','country.name','representative.name','status']"
+           [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+           currentPageReportTemplate="Mostrando {first} de {totalRecords} " [showCurrentPageReport]="true">
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0">Mis Salidas</h5>
+        <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="filterGlobal($event, 'contains')"  placeholder="Search..." />
+                </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+        Id
+        </th>
+        <th>Fecha Salida</th>
+        <th pSortableColumn="name">Rut <p-sortIcon field="rut"></p-sortIcon></th>
+        <th>Producto</th>
+        <th pSortableColumn="motivoSalida">Motivo Salida <p-sortIcon field="motivoSalida"></p-sortIcon></th>
+        <th pSortableColumn="cantidad">Cantidad <p-sortIcon field="cantidad"></p-sortIcon></th>
+        <!--<th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon></th>-->
+
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+
+        <td>{{product.idSalida}}</td>
+        <td>{{product.fechaSalida}}</td>
+        <td>{{product.rut}}</td>
+        <td>{{product.producto }}</td>
+        <td>{{product.motivoSalida}}</td>
+        <td>{{product.cantidad}}</td>
+
+        <td>
+
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+<p-dialog [(visible)]="dialogNewEgreso" [style]="{width: '450px'}" header="Product Details" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content" >
+
+
+
+
+
+    <div class="p-formgrid p-grid">
+
+
+
+
+      <div class="p-field">
+        <label for="name">RUT</label>
+        <input type="text" pInputText #rut>
+
+      </div>
+      <div class="p-field">
+        <p-dropdown [options]="productoLista"  optionDisabled="inactive" placeholder="seleccione un producto" [(ngModel)]="productoSeleccionado" optionLabel="nombre" optionValue="id"></p-dropdown>
+
+      </div>
+
+      <div class="p-field">
+        <label for="name">Cantidad</label>
+        <input type="text" pInputText #cantidad>
+      </div>
+
+      <div class="p-field">
+        <label for="name">Motivo Salida</label>
+        <input type="text" pInputText #motivo>
+      </div>
+
+
+
+
+
+
+    </div>
+    <br><br>
+    <div >
+      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="ocultarNuevo()"></button>
+      <button (click)="saveProduct(cantidad.value,rut.value,motivo.value)" class="p-button-text" icon="pi pi-check" label="Save" pButton
+              pRipple></button>
+    </div>
+
+  </ng-template>
+
+
+</p-dialog>

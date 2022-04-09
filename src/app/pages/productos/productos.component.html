@@ -1,0 +1,217 @@
+<p-toast></p-toast>
+
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button pButton pRipple label="Nuevo Producto" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+
+    </ng-template>
+
+    <ng-template pTemplate="right">
+
+    </ng-template>
+  </p-toolbar>
+
+  <p-table  id="tablafin" #dt [value]="products" [rows]="30" [paginator]="false" [globalFilterFields]="['nombre','country.name','representative.name','status']"
+           [(selection)]="selectedProducts" [rowHover]="true" dataKey="id" [scrollable]="true"  scrollHeight="600px"
+            [virtualScroll]="true" [virtualRowHeight]="40"
+           currentPageReportTemplate="Mostrando {first} de {totalRecords} " [showCurrentPageReport]="true">
+
+    <ng-template pTemplate="header">
+      <tr>
+
+        <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+
+        <th pSortableColumn="precio">Precio <p-sortIcon field="precio"></p-sortIcon></th>
+        <th pSortableColumn="foto">Foto <p-sortIcon field="foto"></p-sortIcon></th>
+<!--        <th>Cantidad</th>-->
+        <!--<th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon></th>-->
+
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product >
+      <tr >
+
+        <td>{{product.product_name}}</td>
+
+        <td>{{product.unite_price | currency:'USD'}}</td>
+        <td>
+
+          <img [src]="product.image" alt="" class="product-image" width="50px" height="50px">
+
+
+        </td>
+     <!--   <td>{{product.quantity_per_unit}}</td>-->
+        <td>
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(product)"></button>
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true" styleClass="p-fluid" >
+  <ng-template pTemplate="content">
+    <img [src]="product.image" [alt]="product.image" class="product-image" *ngIf="product.image">
+
+
+
+
+
+    <div class="p-formgrid p-grid">
+
+
+
+
+
+
+
+
+
+
+      <div class="p-field">
+        <label for="name">Descripcion de producto</label>
+        <input type="text" pInputText #desc  [(ngModel)]="product.product_description">
+
+      </div>
+      <div class="p-field p-col">
+        <label >Nombre del producto</label>
+        <input  pInputText id="contenido" #nombre  [(ngModel)]="product.product_name">
+      </div>
+
+      <div class="p-field p-col">
+        <label for="precio">Precio</label>
+        <p-inputNumber id="precio" #precio [(ngModel)]="product.unite_price"></p-inputNumber>
+      </div>
+
+
+
+  <!--    <div class="p-field">
+        <label for="name">Cantidad</label>
+        <input type="text" pInputText #cantidad>
+
+      </div>-->
+
+      <div class="p-field">
+        <label for="name">Categoria</label>
+        <p-dropdown [options]="productList"  [(ngModel)]="product.id_category.id_category"  optionLabel="name" optionValue="id"></p-dropdown>
+
+
+
+      </div>
+      <br>
+
+      <div class="p-field">
+        <label for="name">Sub Categorias</label>
+        <p-dropdown [options]="categoriasSub" [(ngModel)]="product.subCategoria" optionLabel="name" optionValue="name"></p-dropdown>
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    <div >
+      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+      <button (click)="update(product.id_product,product.image,desc.value,nombre.value,'',precio.value,selectedCategory.id,selectedSubCategory.name)" class="p-button-text" icon="pi pi-check" label="Save" pButton
+              pRipple></button>
+    </div>
+  </ng-template>
+
+
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+
+<p-dialog [(visible)]="dialogNewProduct" [style]="{width: '500px'}" header="Product Details" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+
+
+    <div class="p-formgrid p-grid">
+
+
+      <input type="file" (change)="onFileChange($event)" #fileInput>
+
+
+      <img [src]="imageSrc" alt="" width="100px" height="100px">
+
+
+
+
+      <div class="p-field">
+        <label for="name">Descripcion de producto</label>
+        <input type="text" pInputText #desc>
+
+      </div>
+      <div class="p-field p-col">
+        <label for="quantity">Nombre del producto</label>
+        <input  pInputText id="contenido" #nombre>
+      </div>
+
+      <div class="p-field p-col">
+        <label for="precio">Precio</label>
+        <p-inputNumber id="precio" #precio></p-inputNumber>
+      </div>
+
+
+
+      <div class="p-field">
+        <label for="name">Cantidad</label>
+        <input type="text" pInputText #cantidad>
+
+      </div>
+
+      <div class="p-field">
+        <label for="name">Categoria</label>
+        <p-dropdown [options]="productList" [(ngModel)]="selectedCategory" optionLabel="name" optionValue="id"></p-dropdown>
+
+
+
+      </div>
+<br>
+
+      <div class="p-field">
+        <label for="name">Sub Categorias</label>
+        <p-dropdown [options]="categoriasSub" [(ngModel)]="selectedSubCategory" optionLabel="name" optionValue="name"></p-dropdown>
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+    </div>
+    <br><br>
+    <div >
+      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="ocultarNuevo()"></button>
+      <button (click)="saveProduct(imageSrc,desc.value,nombre.value,cantidad.value,precio.value,selectedCategory.id,selectedSubCategory.name)" class="p-button-text" icon="pi pi-check" label="Save" pButton
+              pRipple></button>
+    </div>
+
+  </ng-template>
+</p-dialog>
+<!--<button (click)="generarPdf()">Generar pdf de las tablas productos</button>-->
