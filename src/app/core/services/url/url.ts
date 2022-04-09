@@ -1,2 +1,2 @@
 
-export const urlApi="http://localhost:8766/";
+export const urlApi="https://maroishi-authproxy.herokuapp.com/";
